@@ -1,0 +1,63 @@
+def fun_1_1():
+    with open('流水账.txt',encoding='gbk') as f:
+        records=f.readlines()
+        a=[['交易对象','收入/万','支出/万','应收账款/万','应付账款/万','交易时间']]
+        records.reverse()
+        for i in records[0:10]:
+            a.append(i.split())
+        Len=[]
+        MaxLen=[0,0,0,0,0,0]
+        for i in a:
+            for j in i:
+                Len.append(len(str(j)))
+        for i in a:
+            for j in range(len(a[0])):
+                if len(str(i[j]))>=MaxLen[j]:
+                    MaxLen[j]=len(str(i[j]))
+        for i in a[0]:
+            print('          '+i,end='')
+        print('\n')
+        for i in a[1:]:
+            n=0
+            for j in i:
+                print(j.rjust(MaxLen[n]+10),end='  ')
+                n+=1
+            print('\n')
+        
+def fun_1_2():
+    with open('流水账.txt',encoding='gbk') as f:
+        records=f.readlines()
+        records_list=[]
+        time=0
+        for i in records:
+            record=i.split()
+            records_list.append(record)
+        name=input('请输入公司名：')
+
+        for check in records_list:
+            if str(name)==check[0]:
+                time+=1
+        print('与%s共有%s笔交易\n'%(name,time))
+        for check in records_list:
+            if str(name)==check[0]:
+                print('交易时间:%s万\n收入:%s万\n支出:%s万\n应收账款:%s万\n应付账款:%s万\n'%(check[5],check[1],check[2],check[3],check[4]))
+                
+def fun_1_3():
+    import numpy as np
+    with open('流水账.txt',encoding='gbk') as f:
+        records=f.readlines()
+        date=records[-1].split()[-1]
+        num=[]
+        for record in records:
+            line=record.split()
+            num.append(line[1:-1])
+        num_array=np.array(num,dtype=int)
+        prop=num_array.sum(axis=0)[0]-num_array.sum(axis=0)[1]
+        debt=num_array.sum(axis=0)[3]-num_array.sum(axis=0)[2]
+        pure=prop-debt
+        print('最新资产:%s万\n最新负债:%s万\n最新净资产:%s万\n最后更新时间:%s万\n'%(prop,debt,pure,date))
+        with open('资产负债.txt','w',encoding='gbk') as a:
+            a.write('%s\n%s\n%s'%(prop,debt,pure))
+            
+def fun_2():
+    import t
