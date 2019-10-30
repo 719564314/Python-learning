@@ -1,0 +1,5 @@
+import re
+with open(r'./date/作文.txt','r') as f:
+    arti=f.read()
+words=re.findall(r'\b\w+\b',arti)
+print('有单词%s个'%len(words))
