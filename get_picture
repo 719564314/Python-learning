@@ -1,0 +1,34 @@
+#-*- coding:utf-8 -*-
+def find_pic(num):
+    req = requests.get('http://www.cxdq.com/index_%s.htm'%num, stream=True)
+    with open("图片网页.txt", "wb") as f:
+            for line in req.iter_lines():
+                f.write(line)
+    with open("图片网页.txt",'rb') as f:
+        link=f.read()
+    ph_list=re.findall(r'http:\/\/\S*\.jpg',link.decode('UTF-8'))
+
+    headers={'referer':'http://m.cxdq.com/'}
+    for i in ph_list:
+        big_pic=re.sub('small','',i)
+        big_pic=re.sub(big_pic[-14:-4],'',big_pic)
+
+        pic=requests.get(big_pic,headers=headers).content
+        try:
+            with open(r'./网站图片保存/%s.jpg'%big_pic[-14:-4],'wb') as f:
+                f.write(pic)
+                print(big_pic,'下载完成')
+        except:
+            os.mkdir('网站图片保存')
+            with open(r'./网站图片保存/%s.jpg'%big_pic[-14:-4],'wb') as f:
+                f.write(pic)
+                print(big_pic,'下载完成')
+                       
+if __name__=='__main__':
+    import re,requests,_thread,os,queue
+    start=input('请输入起始页：')
+    end=input('请输入终止页：')
+    print('开始下载')
+    for i in range(int(start),int(end)+1):
+        _thread.start_new_thread(find_pic,(i,))
+    input('Enter继续')
